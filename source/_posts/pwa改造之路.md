@@ -50,20 +50,31 @@ new WorkboxPlugin.InjectManifest({
 
 ### 缓存策略主要需要注意跨域请求的缓存
 
-对于跨域请求，默认是需要使用`networkFirst`策略的，这种情况下是为了避免错误导致缓存无法被更新。如果不想用，那需要在其他策略中指定请求状态码，这样避免缓存了失败的请求结果
+对于跨域请求，默认是需要使用`networkFirst`策略的，这是为了避免错误导致缓存无法被更新。如果不想用，那需要在其他策略中指定请求状态码，这样避免缓存了失败的请求结果，否则不会给你缓存
 
 还有对于跨域的地址的正则表达式需要从头开始，例如
 
 ```js
 workbox.routing.registerRoute(
-  new RegExp('^https://d1n1fwner8zc14.cloudfront.net/static/img/'),
-  ...
+  new RegExp("^https://cdn/static/img/"),
+  workbox.strategies.cacheFirst({
+    cacheName: "static-images",
+    plugins: [
+      new workbox.cacheableResponse.Plugin({
+        statuses: [0, 200]
+      }),
+      new workbox.expiration.Plugin({
+        maxEntries: 20,
+        maxAgeSeconds: 7 * 24 * 60 * 60
+      })
+    ]
+  })
 )
 ```
 
 表达式开头的 `^` 最好不要省略，否则可能导致无法缓存请求
 
-最后说一下，最好给`cacheFirst`缓存策略设置缓存时间和缓存的大小，也就是缓存的数量，这样可以防止缓存无法过期和占用空间过多的问题
+最后说一下，最好给`cacheFirst`缓存策略设置缓存时间和缓存的大小，也就是缓存的数量，这样可以防止缓存无法过期和占用空间过多的问题。例如上面那个例子的展示
 
 ## manifest 的问题
 
