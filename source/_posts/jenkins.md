@@ -8,8 +8,20 @@ tags: [jenkins]
 最近弄了下`jenkins`，就是为了部署方便点，然后也遇到一些麻烦，顺便记录下
 
 ## 安装Jenkins
-这个直接安装再本地机器上，要不就在`Docker`里面装，`Docker`里面装的话就会有打包时候无法使用`docker`命令的问题，这个需要解决下，其他的都一样。直接装最简单的就是`apt install jenkins`
 
+### 直接
+
+```sh
+> apt install jenkins
+```
+
+### docker
+```sh
+> docker pull jenkins/jenkins
+> docker run -d -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock jenkins/jenkins:latest
+```
+
+### 插件
 然后进入之后插件什么的装一下就妥了，安装插件之前可以先升级下站点的地址，也就是插件的地址，自带那个有点慢，例如这个`https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/current/update-center.json`，在`插件管理/高级/升级站点`贴上就行了
 
 额外要安装的插件：
